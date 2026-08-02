@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mariáš</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Mariáš</h1>
+        <p>Český mariáš v prohlížeči. 2, 3 nebo 4 hráči. Jeden člověk proti AI.</p>
+      </div>
+      <div class="top-actions">
+        <label>
+          Počet hráčů
+          <select id="playerCount">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <button id="newGameBtn">Nová hra</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="side panel">
+        <section>
+          <h2>Nastavení hry</h2>
+          <div class="stack">
+            <div>
+              <label for="trumpSelect">Trumf</label>
+              <select id="trumpSelect"></select>
+            </div>
+            <div>
+              <label for="variantSelect">Varianta</label>
+              <select id="variantSelect">
+                <option value="standard">Standardní mariáš</option>
+                <option value="teach">Výukový režim</option>
+              </select>
+            </div>
+            <div class="info-box" id="gameInfo">Vyber počet hráčů a spusť hru.</div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Skóre</h2>
+          <div id="scoreboard" class="scoreboard"></div>
+        </section>
+
+        <section>
+          <h2>Pravidla v této verzi</h2>
+          <ul class="rules">
+            <li>Musíš přiznat barvu, pokud ji máš.</li>
+            <li>Trumf přebíjí ostatní barvy.</li>
+            <li>Body: eso 11, deset 10, král 4, svršek 3, spodek 2.</li>
+            <li>Hlášky 20 a 40 se počítají za krále a svrška stejné barvy.</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="table panel">
+        <div class="table-header">
+          <div><strong>Na tahu:</strong> <span id="turnLabel">-</span></div>
+          <div><strong>Trumf:</strong> <span id="trumpLabel">-</span></div>
+          <div><strong>Kolo:</strong> <span id="roundLabel">0</span></div>
+        </div>
+        <div class="table-area" id="tableArea"></div>
+        <div class="log" id="log"></div>
+      </section>
+    </main>
+
+    <footer class="hand panel">
+      <h2>Tvoje karty</h2>
+      <div id="handArea" class="hand-area"></div>
+      <div class="hint" id="hintText"></div>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
