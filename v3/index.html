@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mariáš v3</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="./v3.css" />
+</head>
+<body class="theme-classic">
+  <div class="v3-stage">
+    <header class="v3-topbar">
+      <div class="brand-block">
+        <div class="brand-kicker">Český mariáš</div>
+        <h1>Mariáš v3</h1>
+        <p>Vizuálně bohatší stolní verze s důrazem na atmosféru, karty a animace.</p>
+      </div>
+      <div class="controls-block">
+        <label>
+          Režim stolu
+          <select id="themeSelect">
+            <option value="classic">Klasika</option>
+            <option value="tavern">Hospoda</option>
+            <option value="luxury">Luxus</option>
+            <option value="retro">Retro</option>
+          </select>
+        </label>
+        <label>
+          Počet hráčů
+          <select id="playerCount">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <label>
+          Trumf
+          <select id="trumpSelect"></select>
+        </label>
+        <button id="newGameBtn">Nová hra</button>
+      </div>
+    </header>
+
+    <main class="v3-table-wrap">
+      <section class="v3-table-surface">
+        <div class="v3-table-glow"></div>
+        <div class="v3-table">
+          <div class="v3-seat seat-north">
+            <div class="seat-name">Hráč 2</div>
+            <div class="seat-avatar"></div>
+            <div class="seat-score" id="seatScoreTop">0</div>
+          </div>
+
+          <div class="v3-seat seat-west">
+            <div class="seat-name">Hráč 3</div>
+            <div class="seat-avatar"></div>
+            <div class="seat-score" id="seatScoreLeft">0</div>
+          </div>
+
+          <div class="v3-center">
+            <div class="v3-pot">
+              <div class="pot-label">Stůl</div>
+              <div id="tableArea" class="table-area-v3"></div>
+            </div>
+            <div class="v3-info-strip">
+              <div><strong>Na tahu:</strong> <span id="turnLabel">-</span></div>
+              <div><strong>Trumf:</strong> <span id="trumpLabel">-</span></div>
+              <div><strong>Kolo:</strong> <span id="roundLabel">0</span></div>
+            </div>
+            <div class="v3-log" id="log"></div>
+          </div>
+
+          <div class="v3-seat seat-east">
+            <div class="seat-name">Hráč 4</div>
+            <div class="seat-avatar"></div>
+            <div class="seat-score" id="seatScoreRight">0</div>
+          </div>
+
+          <div class="v3-seat seat-south human-seat">
+            <div class="seat-name">Ty</div>
+            <div class="seat-avatar human"></div>
+            <div class="seat-score" id="seatScoreBottom">0</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="v3-hand panel">
+      <div class="hand-head">
+        <div>
+          <h2>Tvoje karty</h2>
+          <div id="gameInfo" class="hand-sub">Připrav se na rozdání.</div>
+        </div>
+        <div id="hintText" class="hand-hint"></div>
+      </div>
+      <div id="scoreboard" class="scoreboard v3-scoreboard"></div>
+      <div id="handArea" class="hand-area v3-hand-area"></div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
