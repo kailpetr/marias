@@ -93,11 +93,18 @@
         </div>
         <div id="hintText" class="hand-hint"></div>
       </div>
+      <div class="v3-toolbar">
+        <button id="soundToggle" class="tool-btn">Zvuk: vypnutý</button>
+        <button id="autoPlayToggle" class="tool-btn">Rychlost AI: normální</button>
+      </div>
       <div id="scoreboard" class="scoreboard v3-scoreboard"></div>
       <div id="handArea" class="hand-area v3-hand-area"></div>
     </footer>
   </div>
 
+  <audio id="dealSound" preload="auto"></audio>
+  <audio id="cardSound" preload="auto"></audio>
+  <audio id="trickSound" preload="auto"></audio>
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>
