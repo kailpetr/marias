@@ -68,13 +68,6 @@ button { cursor: pointer; }
 }
 .rules { margin: 0; padding-left: 18px; color: #dfe9e0; line-height: 1.5; }
 .table { display: grid; gap: 14px; }
-.table-header {
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  color: #dfe9e0;
-}
 .table-area {
   min-height: 320px;
   display: grid;
