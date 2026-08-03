@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mariáš v2</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Mariáš v2</h1>
+        <p>Nová modulární verze. Hra proti AI, připravená pro další pravidla mariáše.</p>
+      </div>
+      <div class="top-actions">
+        <label>
+          Počet hráčů
+          <select id="playerCount">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <label>
+          Trumf
+          <select id="trumpSelect"></select>
+        </label>
+        <button id="newGameBtn">Nová hra</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="side panel">
+        <section>
+          <h2>Stav hry</h2>
+          <div class="stack">
+            <div class="info-box" id="gameInfo">Připrav se na rozdání.</div>
+            <div class="info-box"><strong>Na tahu:</strong> <span id="turnLabel">-</span></div>
+            <div class="info-box"><strong>Trumf:</strong> <span id="trumpLabel">-</span></div>
+            <div class="info-box"><strong>Kolo:</strong> <span id="roundLabel">0</span></div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Skóre</h2>
+          <div id="scoreboard" class="scoreboard"></div>
+        </section>
+
+        <section>
+          <h2>Hlášky a pravidla</h2>
+          <ul class="rules">
+            <li>Musíš přiznat barvu, pokud ji máš.</li>
+            <li>Trumf přebíjí ostatní barvy.</li>
+            <li>Hláška 20 za krále a svrška stejné barvy.</li>
+            <li>Hláška 40 za krále a svrška trumfové barvy.</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="table panel">
+        <div class="table-area" id="tableArea"></div>
+        <div class="log" id="log"></div>
+      </section>
+    </main>
+
+    <footer class="hand panel">
+      <h2>Tvoje karty</h2>
+      <div id="handArea" class="hand-area"></div>
+      <div class="hint" id="hintText"></div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
