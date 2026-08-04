@@ -298,6 +298,42 @@ body.theme-retro .v3-table-surface {
   justify-content: center;
 }
 
+.card {
+  position: relative;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: inherit;
+  border: 1px solid rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+
+.card-face,
+.card-back {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.red-card {
+  color: #a10f1c;
+}
+
+.black-card {
+  color: #1a1f26;
+}
+
 .v3-hand-area .card {
   width: 104px;
   height: 148px;
@@ -307,6 +343,19 @@ body.theme-retro .v3-table-surface {
   box-shadow: 0 14px 28px rgba(0,0,0,0.30);
   position: relative;
   overflow: hidden;
+  --card-art: none;
+}
+
+.v3-hand-area .card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-art);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 1;
+  pointer-events: none;
 }
 
 .v3-hand-area .card::before {
@@ -316,6 +365,7 @@ body.theme-retro .v3-table-surface {
   border-radius: 12px;
   border: 1px solid rgba(130, 100, 40, 0.18);
   pointer-events: none;
+  z-index: 1;
 }
 
 .v3-hand-area .card.red {
@@ -331,13 +381,13 @@ body.theme-retro .v3-table-surface {
   font-size: 34px;
 }
 
-.v3-hand-area .card[data-suit="S"] .mid,
-.v3-hand-area .card[data-suit="C"] .mid {
+.v3-hand-area .card[data-suit="S"],
+.v3-hand-area .card[data-suit="C"] {
   color: #12301c;
 }
 
-.v3-hand-area .card[data-suit="H"] .mid,
-.v3-hand-area .card[data-suit="D"] .mid {
+.v3-hand-area .card[data-suit="H"],
+.v3-hand-area .card[data-suit="D"] {
   color: #a10f1c;
 }
 
@@ -349,6 +399,18 @@ body.theme-retro .v3-table-surface {
   box-shadow: 0 14px 26px rgba(0,0,0,0.24);
   position: relative;
   overflow: hidden;
+  --card-art: none;
+}
+
+.table-area-v3 .card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-art);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 .table-area-v3 .card::before {
@@ -357,6 +419,8 @@ body.theme-retro .v3-table-surface {
   inset: 7px;
   border-radius: 10px;
   border: 1px solid rgba(130, 100, 40, 0.16);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .table-area-v3 .card:nth-child(2) { transform: rotate(2deg); }
@@ -398,6 +462,23 @@ body.theme-retro .v3-table-surface {
 .v3-hand-area .card,
 .table-area-v3 .card {
   animation: cardPop 180ms ease-out;
+}
+
+.card-animated {
+  animation: cardLift 180ms ease-out;
+}
+
+@keyframes cardLift {
+  from { transform: translateY(6px) scale(0.98); filter: brightness(0.98); }
+  to { transform: translateY(0) scale(1); filter: brightness(1); }
+}
+
+.asset-ready {
+  background-image: var(--card-art, none);
+}
+
+.back-ready {
+  background-image: var(--card-back, none);
 }
 
 @media (max-width: 1180px) {
