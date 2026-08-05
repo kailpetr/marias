@@ -40,11 +40,7 @@ function setSoundState(enabled) {
 }
 
 function setSpeed(mode) {
-  const mapping = {
-    slow: 1000,
-    normal: 600,
-    fast: 250,
-  };
+  const mapping = { slow: 1000, normal: 600, fast: 250 };
   v3State.aiSpeed = mapping[mode] ?? 600;
   if (autoPlayToggle) {
     autoPlayToggle.textContent = `Rychlost AI: ${mode === 'slow' ? 'pomalá' : mode === 'fast' ? 'rychlá' : 'normální'}`;
@@ -135,7 +131,31 @@ function renderSnapshot(snapshot) {
   updateSeatScores(snapshot);
 }
 
-function startGame() {
+function ensureRendererButtonsWork() {
+  renderer.bindHandlers({
+    onNewGame: async () => {
+      await startGame();
+    },
+    onPlayCard: async (cardIndex) => {
+      if (!engine.playCard(engine.state.turn, cardIndex)) return;
+      playSound(cardSound);
+      renderSnapshot(engine.snapshot());
+      await afterAIIfNeeded();
+    },
+    onPlayerCount: (players) => {
+      engine.setPlayers(players);
+      renderer.syncSettings(engine.snapshot());
+      renderSnapshot(engine.snapshot());
+    },
+    onTrumpChange: (trump) => {
+      engine.setTrump(trump);
+      renderer.syncSettings(engine.snapshot());
+      renderSnapshot(engine.snapshot());
+    },
+  });
+}
+
+async function startGame() {
   const players = normalizePlayers(renderer.ui.playerCount.value);
   const trump = normalizeTrump(renderer.ui.trumpSelect.value);
   engine.setPlayers(players);
@@ -144,6 +164,7 @@ function startGame() {
   engine.startNewGame({ players, trump });
   renderSnapshot(engine.snapshot());
   playSound(dealSound);
+  await afterAIIfNeeded();
 }
 
 async function afterAIIfNeeded() {
@@ -153,29 +174,6 @@ async function afterAIIfNeeded() {
     playSound(trickSound);
   }
 }
-
-engine.subscribe(renderSnapshot);
-
-renderer.bindHandlers({
-  onNewGame: async () => {
-    startGame();
-    await afterAIIfNeeded();
-  },
-  onPlayCard: async (cardIndex) => {
-    if (!engine.playCard(engine.state.turn, cardIndex)) return;
-    playSound(cardSound);
-    renderSnapshot(engine.snapshot());
-    await afterAIIfNeeded();
-  },
-  onPlayerCount: (players) => {
-    engine.setPlayers(players);
-    renderSnapshot(engine.snapshot());
-  },
-  onTrumpChange: (trump) => {
-    engine.setTrump(trump);
-    renderSnapshot(engine.snapshot());
-  },
-});
 
 if (themeSelect) {
   themeSelect.addEventListener('change', (event) => {
@@ -197,9 +195,10 @@ if (autoPlayToggle) {
   });
 }
 
+engine.subscribe(renderSnapshot);
 applyTheme(v3State.theme);
 setSoundState(false);
 setSpeed('normal');
+ensureRendererButtonsWork();
 renderer.syncSettings(engine.snapshot());
 startGame();
-renderSnapshot(engine.snapshot());
