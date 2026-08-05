@@ -1,4 +1,4 @@
-import { normalizePlayers, normalizeTrump, SUITS } from '../../v2/js/core.js';
+import { normalizePlayers, normalizeTrump } from '../../v2/js/core.js';
 import { GameEngine } from '../../v2/js/engine.js';
 import { AiController } from '../../v2/js/ai.js';
 import { Renderer } from '../../v2/js/renderer.js';
@@ -25,6 +25,7 @@ const v3State = {
   theme: themeSelect?.value || 'classic',
   soundsEnabled: false,
   aiSpeed: 600,
+  rendererPatched: false,
 };
 
 function applyTheme(theme) {
@@ -95,8 +96,7 @@ function decorateCardElement(cardEl, card, theme = v3State.theme) {
   if (!cardEl || !card) return cardEl;
   cardEl.dataset.suit = card.suit;
   cardEl.dataset.rank = card.rank;
-  const image = resolveCardImage(card, theme, true);
-  cardEl.style.backgroundImage = `url("${image}")`;
+  cardEl.style.backgroundImage = `url("${resolveCardImage(card, theme, true)}")`;
   cardEl.style.backgroundSize = 'cover';
   cardEl.style.backgroundPosition = 'center';
   cardEl.style.backgroundRepeat = 'no-repeat';
@@ -106,8 +106,7 @@ function decorateCardElement(cardEl, card, theme = v3State.theme) {
 
 function decorateBack(cardEl, theme = v3State.theme) {
   if (!cardEl) return cardEl;
-  const image = resolveBackImage(theme, true);
-  cardEl.style.backgroundImage = `url("${image}")`;
+  cardEl.style.backgroundImage = `url("${resolveBackImage(theme, true)}")`;
   cardEl.style.backgroundSize = 'cover';
   cardEl.style.backgroundPosition = 'center';
   cardEl.style.backgroundRepeat = 'no-repeat';
@@ -115,52 +114,58 @@ function decorateBack(cardEl, theme = v3State.theme) {
 }
 
 function patchRendererForAssets() {
+  if (v3State.rendererPatched) return;
   const originalMakeCard = renderer.makeCard.bind(renderer);
   renderer.makeCard = (card, asButton = false) => {
     const el = originalMakeCard(card, asButton);
     el.dataset.suit = card.suit;
     el.dataset.rank = card.rank;
-    decorateCardElement(el, card, v3State.theme);
-    return el;
+    return decorateCardElement(el, card, v3State.theme);
   };
+  v3State.rendererPatched = true;
 }
 
 function renderSnapshot(snapshot) {
+  patchRendererForAssets();
   const playableIndices = currentPlayableIndices(snapshot);
   renderer.render(snapshot, {
     playableIndices,
     hint: engine.state.showHints ? hintForState(snapshot) : '',
   });
   updateSeatScores(snapshot);
-  patchRendererForAssets();
+}
+
+function startGame() {
+  const players = normalizePlayers(renderer.ui.playerCount.value);
+  const trump = normalizeTrump(renderer.ui.trumpSelect.value);
+  engine.setPlayers(players);
+  engine.setTrump(trump);
+  engine.state.aiDelay = v3State.aiSpeed;
+  engine.startNewGame({ players, trump });
+  renderSnapshot(engine.snapshot());
+  playSound(dealSound);
+}
+
+async function afterAIIfNeeded() {
+  if (!engine.getHumanTurn()) {
+    await engine.advanceAI(ai);
+    renderSnapshot(engine.snapshot());
+    playSound(trickSound);
+  }
 }
 
 engine.subscribe(renderSnapshot);
 
 renderer.bindHandlers({
   onNewGame: async () => {
-    const players = normalizePlayers(renderer.ui.playerCount.value);
-    const trump = normalizeTrump(renderer.ui.trumpSelect.value);
-    engine.setPlayers(players);
-    engine.setTrump(trump);
-    engine.state.aiDelay = v3State.aiSpeed;
-    engine.startNewGame({ players, trump });
-    playSound(dealSound);
-    renderSnapshot(engine.snapshot());
-    if (!engine.getHumanTurn()) {
-      await engine.advanceAI(ai);
-      renderSnapshot(engine.snapshot());
-    }
+    startGame();
+    await afterAIIfNeeded();
   },
   onPlayCard: async (cardIndex) => {
     if (!engine.playCard(engine.state.turn, cardIndex)) return;
     playSound(cardSound);
     renderSnapshot(engine.snapshot());
-    if (!engine.getHumanTurn()) {
-      await engine.advanceAI(ai);
-      playSound(trickSound);
-      renderSnapshot(engine.snapshot());
-    }
+    await afterAIIfNeeded();
   },
   onPlayerCount: (players) => {
     engine.setPlayers(players);
@@ -196,5 +201,5 @@ applyTheme(v3State.theme);
 setSoundState(false);
 setSpeed('normal');
 renderer.syncSettings(engine.snapshot());
-engine.startNewGame({ players: engine.state.players, trump: engine.state.trump });
+startGame();
 renderSnapshot(engine.snapshot());
